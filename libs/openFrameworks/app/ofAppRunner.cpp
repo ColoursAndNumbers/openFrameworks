@@ -48,8 +48,7 @@ void ofExitCallback();
 
 // the same hack but in this case the shared_ptr will delete, old versions created the testApp as new...
 //--------------------------------------
-void ofRunApp(ofBaseApp * OFSA){
-
+void ofInitApp(ofBaseApp * OFSA) {
 	OFSAptr = ofPtr<ofBaseApp>(OFSA);
 	if(OFSAptr){
 		OFSAptr->mouseX = 0;
@@ -76,7 +75,10 @@ void ofRunApp(ofBaseApp * OFSA){
 
 	ofSeedRandom();
 	ofResetElapsedTimeCounter();
+}
 
+void ofRunApp(ofBaseApp * OFSA) {
+	ofInitApp(OFSA);
 	window->runAppViaInfiniteLoop(OFSAptr.get());
 }
 
