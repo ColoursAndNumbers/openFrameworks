@@ -210,8 +210,9 @@ ofAppGlutWindow::ofAppGlutWindow(){
 	lastFrameTime		= 0.0;
 	displayString		= "";
 	orientation			= OF_ORIENTATION_DEFAULT;
-	bDoubleBuffered = true; // LIA
-
+	bDoubleBuffered		= true; // LIA
+	m_argc				= 0;
+	m_argv				= NULL;
 }
 
 //lets you enable alpha blending using a display string like:
@@ -230,13 +231,16 @@ void ofAppGlutWindow::setDoubleBuffering(bool _bDoubleBuffered){
 
 
 //------------------------------------------------------------
-void ofAppGlutWindow::setupOpenGL(int w, int h, int screenMode){
+void ofAppGlutWindow::setupOpenGL(int w, int h, int screenMode) 
+{
+	if(m_argc <= 0)
+	{
+		char* v = "openframeworks";
+		m_argv = &v;
+		m_argc = 1;
+	}
 
-	//char *argv = (char*)"openframeworks";
-	//char **vptr = &argv;
-	int argc = 3;
-	char* vptr[] = { "openframeworks", "-display", "\\\\.\\DISPLAY1" };
-	glutInit(&argc, vptr);
+	glutInit(&m_argc, m_argv);
 
 	if( displayString != ""){
 		glutInitDisplayString( displayString.c_str() );
