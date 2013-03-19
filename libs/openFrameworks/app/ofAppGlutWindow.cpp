@@ -232,9 +232,10 @@ void ofAppGlutWindow::setDoubleBuffering(bool _bDoubleBuffered){
 //------------------------------------------------------------
 void ofAppGlutWindow::setupOpenGL(int w, int h, int screenMode){
 
-	int argc = 1;
-	char *argv = (char*)"openframeworks";
-	char **vptr = &argv;
+	//char *argv = (char*)"openframeworks";
+	//char **vptr = &argv;
+	int argc = 3;
+	char* vptr[] = { "openframeworks", "-display", "\\\\.\\DISPLAY1" };
 	glutInit(&argc, vptr);
 
 	if( displayString != ""){
