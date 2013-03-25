@@ -2,6 +2,7 @@
 
 /apps/
 /examples/
+!/examples/video/videoPlayerExample/
 /other/
 /projectGenerator/
 /scripts/
