@@ -19,8 +19,6 @@
 	//#include <MoviesFormat.h>
 #endif
 
-#ifndef MAC_OS_X_VERSION_10_7
-
 //p2cstr depreciation fix - thanks pickard!
 #ifdef TARGET_OSX
 	#define p2cstr(aStr) CFStringGetCStringPtr(CFStringCreateWithPascalString(NULL, aStr, kCFStringEncodingMacRoman),kCFStringEncodingMacRoman)
@@ -33,13 +31,20 @@ typedef struct{
 	unsigned char b;
 } pix24;
 
+typedef struct{
+	unsigned char a;	
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+} pix32;
+
 
 
 //----------------------------------------
 
 void 		initializeQuicktime();
 void 		closeQuicktime();
-void 		convertPixels(unsigned char * gWorldPixels, unsigned char * rgbPixels, int w, int h);
+void 		convertPixels(unsigned char * gWorldPixels, unsigned char * rgbPixels, int w, int h, int bpp);
 Boolean 	SeqGrabberModalFilterUPP(DialogPtr theDialog, const EventRecord *theEvent, short *itemHit, long refCon);
 OSErr           IsMPEGMediaHandler(MediaHandler inMediaHandler, Boolean *outIsMPEG);
 ComponentResult MPEGMediaGetStaticFrameRate(MediaHandler inMPEGMediaHandler, Fixed *outStaticFrameRate);
@@ -52,7 +57,5 @@ void            MovieGetStaticFrameRate(Movie inMovie, double *outStaticFrameRat
 	OSErr	GetSettingsPreference(CFStringRef inKey, UserData *outUserData);
 	OSErr	SaveSettingsPreference(CFStringRef inKey, UserData inUserData);
 #endif
-
-#endif //OS 10.7 guard
 
 #endif

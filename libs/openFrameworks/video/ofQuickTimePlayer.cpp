@@ -2,7 +2,9 @@
 #include "ofUtils.h"
 
 #ifndef TARGET_LINUX
+//--------------------------------------------------------------
 #ifdef  OF_VIDEO_PLAYER_QUICKTIME
+//--------------------------------------------------------------
 
 bool  	createMovieFromPath(char * path, Movie &movie);
 bool 	createMovieFromPath(char * path, Movie &movie){
@@ -92,12 +94,21 @@ OSErr 	DrawCompleteProc(Movie theMovie, long refCon){
 	ofQuickTimePlayer * ofvp = (ofQuickTimePlayer *)refCon;
 
 	#if defined(TARGET_OSX) && defined(__BIG_ENDIAN__)
-		convertPixels(ofvp->offscreenGWorldPixels, ofvp->pixels.getPixels(), ofvp->width, ofvp->height);
+        if (pixelFormat == OF_PIXELS_RGBA) {
+            convertPixels(ofvp->offscreenGWorldPixels, ofvp->pixels.getPixels(), ofvp->width, ofvp->height, 4);
+        } else {
+            convertPixels(ofvp->offscreenGWorldPixels, ofvp->pixels.getPixels(), ofvp->width, ofvp->height, 3);
+        }
 	#endif
 
 	ofvp->bHavePixelsChanged = true;
 	return noErr;
 }
+
+//--------------------------------------------------------------
+#endif
+//--------------------------------------------------------------
+
 
 //---------------------------------------------------------------------------
 ofQuickTimePlayer::ofQuickTimePlayer (){
@@ -108,6 +119,7 @@ ofQuickTimePlayer::ofQuickTimePlayer (){
     	moviePtr	 				= NULL;
     	allocated 					= false;
         offscreenGWorld				= NULL;
+        pixelFormat                 = OF_PIXELS_RGB;
 	//--------------------------------------------------------------
 	#endif
 	//--------------------------------------------------------------
@@ -229,6 +241,12 @@ void ofQuickTimePlayer::closeMovie(){
 
 }
 
+//---------------------------------------------------------------------------
+bool ofQuickTimePlayer::setPixelFormat(ofPixelFormat pxFormat){
+    pixelFormat = pxFormat;
+	return true;
+}
+
 
 //--------------------------------------
 #ifdef OF_VIDEO_PLAYER_QUICKTIME
@@ -241,24 +259,26 @@ void ofQuickTimePlayer::createImgMemAndGWorld(){
 	movieRect.bottom 		= height;
 	movieRect.right 		= width;
 	offscreenGWorldPixels = new unsigned char[4 * width * height + 32];
-	pixels.allocate(width,height,OF_IMAGE_COLOR);
+    if (pixelFormat == OF_PIXELS_RGBA) {
+        pixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
+    } 
+    else {
+        pixels.allocate(width, height, OF_IMAGE_COLOR);
+    }
 
 	#if defined(TARGET_OSX) && defined(__BIG_ENDIAN__)
 		QTNewGWorldFromPtr (&(offscreenGWorld), k32ARGBPixelFormat, &(movieRect), NULL, NULL, 0, (offscreenGWorldPixels), 4 * width);		
 	#else
-		QTNewGWorldFromPtr (&(offscreenGWorld), k24RGBPixelFormat, &(movieRect), NULL, NULL, 0, (pixels.getPixels()), 3 * width);
+        if (pixelFormat == OF_PIXELS_RGBA) {
+            QTNewGWorldFromPtr (&(offscreenGWorld), k32RGBAPixelFormat, &(movieRect), NULL, NULL, 0, (pixels.getPixels()), 4 * width);
+        }
+        else {
+            QTNewGWorldFromPtr (&(offscreenGWorld), k24RGBPixelFormat, &(movieRect), NULL, NULL, 0, (pixels.getPixels()), 3 * width);
+        }
 	#endif
 
 	LockPixels(GetGWorldPixMap(offscreenGWorld));
-
-    // from : https://github.com/openframeworks/openFrameworks/issues/244
-    // SetGWorld do not seems to be necessary for offscreen rendering of the movie
-    // only SetMovieGWorld should be called
-    // if both are called, the app will crash after a few ofVideoPlayer object have been deleted
-
-	#ifndef TARGET_WIN32
-        SetGWorld (offscreenGWorld, NULL);
-	#endif
+	SetGWorld (offscreenGWorld, NULL);
 	SetMovieGWorld (moviePtr, offscreenGWorld, nil);
 
 }
@@ -279,24 +299,6 @@ bool ofQuickTimePlayer::loadMovie(string name){
 		initializeQuicktime();			// init quicktime
 		closeMovie();					// if we have a movie open, close it
 		bLoaded 				= false;	// try to load now
-
-
-    // from : https://github.com/openframeworks/openFrameworks/issues/244
-    // http://developer.apple.com/library/mac/#documentation/QuickTime/RM/QTforWindows/QTforWindows/C-Chapter/3BuildingQuickTimeCa.html
-    // Apple's documentation *seems* to state that a Gworld should have been set prior to calling NewMovieFromFile
-    // So I set a dummy Gworld (1x1 pixel) before calling createMovieFromPath
-    // it avoids crash at the creation of objet ofVideoPlayer after a previous ofVideoPlayer have been deleted
-
-    #ifdef TARGET_WIN32
-        if (width != 0 && height != 0){
-            pixels.clear();
-            delete [] offscreenGWorldPixels;
-        }
-        width = 1;
-        height = 1;
-        createImgMemAndGWorld();
-    #endif
-
 
 		if( name.substr(0, 7) == "http://" || name.substr(0,7) == "rtsp://" ){
 			if(! createMovieFromURL(name, moviePtr) ) return false;
@@ -365,7 +367,11 @@ bool ofQuickTimePlayer::loadMovie(string name){
 		MoviesTask(moviePtr,0);
 
 		#if defined(TARGET_OSX) && defined(__BIG_ENDIAN__)
-			convertPixels(offscreenGWorldPixels, pixels.getPixels(), width, height);
+            if (pixelFormat == OF_PIXELS_RGBA) {
+                convertPixels(offscreenGWorldPixels, pixels.getPixels(), width, height, 4);
+            } else {
+                convertPixels(offscreenGWorldPixels, pixels.getPixels(), width, height, 3);
+            }
 		#endif
 
 		bStarted 				= false;
@@ -409,7 +415,11 @@ void ofQuickTimePlayer::start(){
 		// get some pixels in there right away:
 		MoviesTask(moviePtr,0);
 		#if defined(TARGET_OSX) && defined(__BIG_ENDIAN__)
-			convertPixels(offscreenGWorldPixels, pixels.getPixels(), width, height);
+            if (pixelFormat == OF_PIXELS_RGBA) {
+                convertPixels(offscreenGWorldPixels, pixels.getPixels(), width, height, 4);
+            } else {
+                convertPixels(offscreenGWorldPixels, pixels.getPixels(), width, height, 3);
+            }
 		#endif
 		bHavePixelsChanged = true;
 
@@ -480,7 +490,7 @@ void ofQuickTimePlayer::stop(){
 }
 
 //--------------------------------------------------------
-void ofQuickTimePlayer::setVolume(float volume){
+void ofQuickTimePlayer::setVolume(int volume){
 	if( !isLoaded() ){
 		ofLog(OF_LOG_ERROR, "ofQuickTimePlayer: movie not loaded!");
 		return;
@@ -490,7 +500,7 @@ void ofQuickTimePlayer::setVolume(float volume){
 	#ifdef OF_VIDEO_PLAYER_QUICKTIME
 	//--------------------------------------
 
-	SetMovieVolume(moviePtr, volume*255);
+	SetMovieVolume(moviePtr, volume);
 
 	//--------------------------------------
 	#endif
@@ -546,10 +556,6 @@ void ofQuickTimePlayer::setLoopState(ofLoopType state){
 
 }
 
-//---------------------------------------------------------------------------
-ofLoopType ofQuickTimePlayer::getLoopState(){
-	return currentLoopState;
-}
 
 //---------------------------------------------------------------------------
 void ofQuickTimePlayer::setPosition(float pct){
@@ -690,22 +696,6 @@ int ofQuickTimePlayer::getCurrentFrame(){
 	#endif
 	//--------------------------------------
 
-}
-
-//---------------------------------------------------------------------------
-bool ofQuickTimePlayer::setPixelFormat(ofPixelFormat pixelFormat){
-	//note as we only support RGB we are just confirming that this pixel format is supported
-	if( pixelFormat == OF_PIXELS_RGB ){
-		return true;
-	}
-	ofLogWarning("ofQuickTimePlayer") << "requested pixel format not supported" << endl;
-	return false;
-}
-
-//---------------------------------------------------------------------------
-ofPixelFormat ofQuickTimePlayer::getPixelFormat(){
-	//note if you support more than one pixel format you will need to return a ofPixelFormat variable. 
-	return OF_PIXELS_RGB;
 }
 
 
@@ -878,8 +868,6 @@ bool ofQuickTimePlayer::isLoaded(){
 bool ofQuickTimePlayer::isPlaying(){
 	return bPlaying;
 }
-
-#endif
 
 #endif
 
