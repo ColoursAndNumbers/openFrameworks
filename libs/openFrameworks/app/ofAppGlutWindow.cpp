@@ -50,6 +50,9 @@ static int          nFramesSinceWindowResized;
 static ofOrientation	orientation;
 static ofBaseApp *  ofAppPtr;
 
+static char* defaultArgv = "openframeworks";
+
+
 #ifdef TARGET_WIN32
 
 //------------------------------------------------
@@ -235,8 +238,7 @@ void ofAppGlutWindow::setupOpenGL(int w, int h, int screenMode)
 {
 	if(m_argc <= 0)
 	{
-		char* v = "openframeworks";
-		m_argv = &v;
+		m_argv = &defaultArgv;
 		m_argc = 1;
 	}
 
