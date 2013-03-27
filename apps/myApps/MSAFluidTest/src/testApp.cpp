@@ -48,7 +48,11 @@ void testApp::setup() {
     gui.loadFromXML();
 	gui.setDefaultKeys(true);
 	gui.setAutoSave(true);
-    gui.show();
+	#ifdef HIDE_GUI
+		gui.removeListeners(); 
+	#else
+		gui.show();
+	#endif
 #endif
 	
 	windowResized(ofGetWidth(), ofGetHeight());		// force this at start (cos I don't think it is called)
@@ -79,7 +83,7 @@ void testApp::addToFluid(ofVec2f pos, ofVec2f vel, bool addColor, bool addForce)
 //			Color drawColor(CM_HSV, (getElapsedFrames() % 360) / 360.0f, 1, 1);
 			ofColor drawColor;
 			drawColor.setHsb((ofGetFrameNum() % 255), 255, 255);
-			drawColor.set(255, 64, 40);
+			drawColor.set(255, 64, 40); 
 			
 			fluidSolver.addColorAtIndex(index, drawColor * colorMult);
 			
@@ -133,10 +137,13 @@ void testApp::draw(){
 	if(drawParticles)
 		particleSystem.updateAndDraw(fluidSolver, ofGetWindowSize(), drawFluid);
 	
-	ofDrawBitmapString(sz, 50, 50);
+	ofDrawBitmapString(sz, 50, 50); 
 
 #ifdef USE_GUI 
 	gui.draw();
+#endif
+#ifdef HIDE_GUI
+	ofDrawBitmapString(ofToString(ofGetFrameRate()),80,20);
 #endif
 }
 

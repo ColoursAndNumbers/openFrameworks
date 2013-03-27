@@ -14,7 +14,7 @@
 // you will need ofxSimpleGuiToo, ofxMSAInteractiveObject & ofxXmlSettings
 // if you don't use the GUI, you won't be able to see the fluid parameters
 #define USE_GUI		
-
+#define HIDE_GUI
 
 #ifdef USE_TUIO
 #include "ofxTuio.h"

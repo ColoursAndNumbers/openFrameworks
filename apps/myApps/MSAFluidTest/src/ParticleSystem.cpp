@@ -34,6 +34,8 @@ void ParticleSystem::updateAndDraw(const msa::fluid::Solver &solver, ofVec2f win
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3, GL_FLOAT, 0, colArray);
 	
+	//glPointSize(3.f);
+	//glDrawArrays(GL_POINTS, 0, MAX_PARTICLES);
 	glDrawArrays(GL_LINES, 0, MAX_PARTICLES * 2);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);

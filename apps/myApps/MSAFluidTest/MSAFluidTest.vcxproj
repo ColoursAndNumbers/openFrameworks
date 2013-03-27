@@ -94,6 +94,7 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>PocoFoundation.lib;atlthunk.lib;LIBC.lib;LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
