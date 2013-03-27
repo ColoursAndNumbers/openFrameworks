@@ -7,3 +7,15 @@
 [submodule "addons/ofxGenerative"]
 	path = addons/ofxGenerative
 	url = ../../rezaali/ofxGenerative.git
+[submodule "addons/ofxMSAFluid"]
+	path = addons/ofxMSAFluid
+	url = ../../memo/ofxMSAFluid.git
+[submodule "addons/ofxMSACore"]
+	path = addons/ofxMSACore
+	url = ../../memo/ofxMSACore.git
+[submodule "addons/ofxSimpleGuiToo"]
+	path = addons/ofxSimpleGuiToo
+	url = ../../memo/ofxSimpleGuiToo.git
+[submodule "addons/ofxMSAInteractiveObject"]
+	path = addons/ofxMSAInteractiveObject
+	url = ../../memo/ofxMSAInteractiveObject.git
