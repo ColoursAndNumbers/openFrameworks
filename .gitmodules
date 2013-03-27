@@ -1,6 +1,0 @@
-[submodule "addons/ofxDrawnetic"]
-	path = addons/ofxDrawnetic
-	url = ../../rezaali/ofxDrawnetic.git
-[submodule "addons/ofxGenerative"]
-	path = addons/ofxGenerative
-	url = ../../rezaali/ofxGenerative.git
