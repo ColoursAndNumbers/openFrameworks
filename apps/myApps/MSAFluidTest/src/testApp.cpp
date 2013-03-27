@@ -199,8 +199,14 @@ void testApp::keyPressed  (int key){
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y){
 	ofVec2f eventPos = ofVec2f(x, y);
+	static ofVec2f prevEventPos = eventPos;
+
 	ofVec2f mouseNorm = ofVec2f(eventPos) / ofGetWindowSize();
 	ofVec2f mouseVel = ofVec2f(eventPos - pMouse) / ofGetWindowSize();
+
+	static float s_fFadeSpeed = .05f;
+	fluidSolver.setFadeSpeed(s_fFadeSpeed * mouseVel.length());
+
 	addToFluid(mouseNorm, mouseVel, true, true);
 	pMouse = eventPos;
 }

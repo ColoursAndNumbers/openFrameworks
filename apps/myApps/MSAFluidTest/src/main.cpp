@@ -2,6 +2,7 @@
 #include "testApp.h"
 
 int main( ){
-	ofSetupOpenGL(1280, 1024, OF_GAME_MODE);			// <-------- setup the GL context
+	//ofSetupOpenGL(800, 600, OF_WINDOW);
+	ofSetupOpenGL(1920, 1080, OF_GAME_MODE);
 	ofRunApp(new testApp);
 }
