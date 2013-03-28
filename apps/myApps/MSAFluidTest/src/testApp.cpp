@@ -150,6 +150,11 @@ void testApp::draw(){
 
 void testApp::keyPressed  (int key){ 
     switch(key) {
+		case 'q':
+		{
+			ofToggleFullscreen();
+			break;
+		}
 		case '1':
 			fluidDrawer.setDrawMode(msa::fluid::kDrawColor);
 			break;
@@ -212,10 +217,13 @@ void testApp::mouseMoved(int x, int y){
 }
 
 void testApp::mouseDragged(int x, int y, int button) {
-	ofVec2f eventPos = ofVec2f(x, y);
-	ofVec2f mouseNorm = ofVec2f(eventPos) / ofGetWindowSize();
-	ofVec2f mouseVel = ofVec2f(eventPos - pMouse) / ofGetWindowSize();
-	addToFluid(mouseNorm, mouseVel, false, true);
-	pMouse = eventPos;
+	
+	mouseMoved(x, y);
+
+	//ofVec2f eventPos = ofVec2f(x, y);
+	//ofVec2f mouseNorm = ofVec2f(eventPos) / ofGetWindowSize();
+	//ofVec2f mouseVel = ofVec2f(eventPos - pMouse) / ofGetWindowSize();
+	//addToFluid(mouseNorm, mouseVel, false, true);
+	//pMouse = eventPos;
 }
 
