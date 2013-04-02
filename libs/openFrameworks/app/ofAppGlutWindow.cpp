@@ -52,6 +52,13 @@ static ofBaseApp *  ofAppPtr;
 
 static char* defaultArgv = "openframeworks";
 
+#ifdef TARGET_WIN32
+	static int m_fsWinRectX;	// Used for specifying the window pos and size, in virtual desktop co-ordinates when in OF_FULLSCREEN mode. 
+	static int m_fsWinRectY;
+	static int m_fsWinRectW;
+	static int m_fsWinRectH;
+#endif
+
 
 #ifdef TARGET_WIN32
 
@@ -216,6 +223,10 @@ ofAppGlutWindow::ofAppGlutWindow(){
 	bDoubleBuffered		= true; // LIA
 	m_argc				= 0;
 	m_argv				= NULL;
+	m_fsWinRectX		= 0;
+	m_fsWinRectY		= 0;
+	m_fsWinRectW		= -1;
+	m_fsWinRectH		= -1;
 }
 
 //lets you enable alpha blending using a display string like:
@@ -292,8 +303,13 @@ void ofAppGlutWindow::setupOpenGL(int w, int h, int screenMode)
     	// start fullscreen game mode
     	glutEnterGameMode();
 	}
-	windowW = glutGet(GLUT_WINDOW_WIDTH);
-	windowH = glutGet(GLUT_WINDOW_HEIGHT);
+
+	// Because it doesn't enter fullscreen until the first display() call, override the values here to
+	// match the overrides (if any) so that in the app setup() call they are correct. I had to do this
+	// because freeglut (I think) was doing compensation for the window decorations, so passing the
+	// m_fsWinRectW/H as the w/h params to this function was resulting in an incorrect result.
+	windowW = m_fsWinRectW == -1 ? glutGet(GLUT_WINDOW_WIDTH) : m_fsWinRectW;
+	windowH = m_fsWinRectH == -1 ? glutGet(GLUT_WINDOW_HEIGHT) : m_fsWinRectH;
 }
 
 //------------------------------------------------------------
@@ -361,6 +377,12 @@ int ofAppGlutWindow::getFrameNum(){
 //------------------------------------------------------------
 void ofAppGlutWindow::setWindowTitle(string title){
 	glutSetWindowTitle(title.c_str());
+}
+
+//------------------------------------------------------------
+void ofAppGlutWindow::setFullScreenWinRect(int x, int y, int w, int h) 
+{ 
+	m_fsWinRectX = x; m_fsWinRectY = y; m_fsWinRectW = w; m_fsWinRectH = h; 
 }
 
 //------------------------------------------------------------
@@ -522,7 +544,14 @@ void ofAppGlutWindow::display(void){
 				nonFullScreenY = glutGet(GLUT_WINDOW_Y);
 				//----------------------------------------------------
 
-				glutFullScreen();
+				if(m_fsWinRectW == -1 && m_fsWinRectH == -1)
+				{
+					glutFullScreen();
+				}
+				else
+				{
+					glutFullScreenEx(m_fsWinRectX, m_fsWinRectY, m_fsWinRectW, m_fsWinRectH);
+				}
 
 				#ifdef TARGET_OSX
 					SetSystemUIMode(kUIModeAllHidden,NULL);

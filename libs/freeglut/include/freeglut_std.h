@@ -418,6 +418,8 @@ FGAPI void    FGAPIENTRY glutPushWindow( void );
 FGAPI void    FGAPIENTRY glutPopWindow( void );
 FGAPI void    FGAPIENTRY glutFullScreen( void );
 
+FGAPI void    FGAPIENTRY glutFullScreenEx( int x, int y, int w, int h );
+
 /*
  * Display-connected functions, see freeglut_display.c
  */

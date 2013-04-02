@@ -57,6 +57,7 @@ public:
 	void		disableSetupScreen();
 
 	void		setInitGlutArgs(int argc, char** argv) { m_argc = argc; m_argv = argv; }
+	static void	setFullScreenWinRect(int x, int y, int w, int h);
 
 	static void display(void);
 	static void mouse_cb(int button, int state, int x, int y);
@@ -70,9 +71,10 @@ public:
 	static void resize_cb(int w, int h);
 	static void entry_cb(int state);
 	static void dragEvent(char ** fileNames, int howManyFiles, int dragX, int dragY);
-	string displayString;
-	int m_argc;					// For passing to glutInit().
-	char** m_argv;
-		 
+	
+	string		displayString;
+	int			m_argc;					// For passing to glutInit().
+	char**		m_argv;
+
 };
 
