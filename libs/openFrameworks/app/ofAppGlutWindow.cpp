@@ -36,7 +36,7 @@ static int 			millisForFrame;
 static int 			prevMillis;
 static int 			diffMillis;
 
-static float 		frameRate;
+static double 		frameRate;
 
 static double		lastFrameTime;
 
@@ -761,10 +761,10 @@ void ofAppGlutWindow::idle_cb(void) {
 
 	timeNow = ofGetElapsedTimef();
 	double diff = timeNow-timeThen;
-	if( diff  > 0.00001 ){
+	if( diff  > 0.001 ){
 		fps			= 1.0 / diff;
-		frameRate	*= 0.9f;
-		frameRate	+= 0.1f*fps;
+		frameRate	*= 0.9;
+		frameRate	+= 0.1 / diff;
 	 }
 	 lastFrameTime	= diff;
 	 timeThen		= timeNow;
