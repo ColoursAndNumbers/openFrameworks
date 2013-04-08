@@ -888,8 +888,8 @@ ofPoint ofTexture::getCoordFromPercent(float xPct, float yPct){
 //----------------------------------------------------------
 void ofTexture::setTextureWrap(GLint wrapModeHorizontal, GLint wrapModeVertical) {
 	bind();
-	glTexParameterf(texData.textureTarget, GL_TEXTURE_WRAP_S, wrapModeHorizontal);
-	glTexParameterf(texData.textureTarget, GL_TEXTURE_WRAP_T, wrapModeVertical);
+	glTexParameteri(texData.textureTarget, GL_TEXTURE_WRAP_S, wrapModeHorizontal);		// Why were these using glTexParameterf()?
+	glTexParameteri(texData.textureTarget, GL_TEXTURE_WRAP_T, wrapModeVertical);
 	unbind();
 }
 
