@@ -761,7 +761,7 @@ void ofAppGlutWindow::idle_cb(void) {
 
 	timeNow = ofGetElapsedTimef();
 	double diff = timeNow-timeThen;
-	if( diff  > 0.001 ){
+	if( diff  > 0.0001 ){
 		fps			= 1.0 / diff;
 		frameRate	*= 0.9;
 		frameRate	+= 0.1 / diff;
