@@ -760,12 +760,17 @@ void ofAppGlutWindow::idle_cb(void) {
 	// http://www.openframeworks.cc/forum/viewtopic.php?f=7&t=1892&p=11166#p11166
 
 	timeNow = ofGetElapsedTimef();
+	/*
 	double diff = timeNow-timeThen;
-	if( diff  > 0.0001 ){
+	if( diff  > 0.00001 ){
 		fps			= 1.0 / diff;
-		frameRate	*= 0.9;
-		frameRate	+= 0.1 / diff;
+		frameRate	*= 0.9f;
+		frameRate	+= 0.1f * fps;
 	 }
+	 */
+	 double diff = max<double>(timeNow-timeThen, 0.0001f);
+	 frameRate = 1.0 / diff;
+
 	 lastFrameTime	= diff;
 	 timeThen		= timeNow;
   	// --------------
