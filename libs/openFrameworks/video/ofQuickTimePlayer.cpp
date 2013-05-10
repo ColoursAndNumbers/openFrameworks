@@ -230,12 +230,15 @@ void ofQuickTimePlayer::closeMovie(){
 		DisposeMovieDrawingCompleteUPP(myDrawCompleteProc);
 
 		moviePtr = NULL;
-        
+
+		width = height = 0;        
     }
 
    	//--------------------------------------
 	#endif
     //--------------------------------------
+
+	clearMemory();
 
 	bLoaded = false;
 
