@@ -261,7 +261,6 @@ void ofQuickTimePlayer::createImgMemAndGWorld(){
 	movieRect.left 			= 0;
 	movieRect.bottom 		= height;
 	movieRect.right 		= width;
-	offscreenGWorldPixels = new unsigned char[4 * width * height + 32];
     if (pixelFormat == OF_PIXELS_RGBA) {
         pixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
     } 
@@ -270,6 +269,7 @@ void ofQuickTimePlayer::createImgMemAndGWorld(){
     }
 
 	#if defined(TARGET_OSX) && defined(__BIG_ENDIAN__)
+		offscreenGWorldPixels = new unsigned char[4 * width * height + 32];
 		QTNewGWorldFromPtr (&(offscreenGWorld), k32ARGBPixelFormat, &(movieRect), NULL, NULL, 0, (offscreenGWorldPixels), 4 * width);		
 	#else
         if (pixelFormat == OF_PIXELS_RGBA) {
